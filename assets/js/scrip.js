@@ -8,27 +8,54 @@ var showCityDetails = function (city) {
     var cityNameEl = document.createElement("h2")
     cityNameEl.textContent = city.name
     cityDetailsParent.appendChild(cityNameEl)
-    var fetchurl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + city.lat +"&lon=" + city.long +"&units=imperial&appid=563792f09223bd0da18c8df2a8d545fc";
+    var fetchurl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + city.lat + "&lon=" + city.long + "&units=imperial&appid=563792f09223bd0da18c8df2a8d545fc";
     fetch(fetchurl)
-    .then (function(response) {
-        return response.json();
-    })
-    .then(function (data) {
-        console.log(data);
-        var tempEl = document.createElement ("p");
-        tempEl.textContent = "Temp: " + data.current.temp + "F";
-        cityDetailsParent.appendChild(tempEl);
-        var windEl = document.createElement ("p");
-        windEl.textContent = "Wind: " + data.current.wind_speed + "mph";
-        cityDetailsParent.appendChild(windEl);
-        var humidityEl = document.createElement ("p");
-        humidityEl.textContent = "Humidity: " + data.current.humidity + "%";
-        cityDetailsParent.appendChild(humidityEl);
-        var uvindexEl = document.createElement ("p");
-        uvindexEl.textContent = "UV Index: " + data.current.uvi;
-        cityDetailsParent.appendChild (uvindexEl);
-        // now add the 5-day forecast
-    })
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            console.log(data);
+            var tempEl = document.createElement("p");
+            tempEl.textContent = "Temp: " + data.current.temp + "F";
+            cityDetailsParent.appendChild(tempEl);
+            var windEl = document.createElement("p");
+            windEl.textContent = "Wind: " + data.current.wind_speed + "mph";
+            cityDetailsParent.appendChild(windEl);
+            var humidityEl = document.createElement("p");
+            humidityEl.textContent = "Humidity: " + data.current.humidity + "%";
+            cityDetailsParent.appendChild(humidityEl);
+            var uvindexEl = document.createElement("p");
+            uvindexEl.textContent = "UV Index: " + data.current.uvi;
+            cityDetailsParent.appendChild(uvindexEl);
+            // now add the 5-day forecast
+            var forecastParent = document.querySelector("#forecastParent");
+            while (forecastParent.hasChildNodes()) {
+                forecastParent.removeChild(forecastParent.firstChild)
+            }
+            for (i = 0; i < 5; i++) {
+
+
+                var day1 = document.createElement("div");
+                var day1Date = moment.unix(data.daily[i+1].dt).format("MM/DD/YYYY")
+                forecastParent.appendChild(day1);
+                var day1DateEl = document.createElement("p");
+                day1DateEl.textContent = day1Date;
+                day1.appendChild(day1DateEl);
+                var weatherEl = document.createElement('p');
+                weatherEl.textContent = data.daily[i+1].clouds;
+                day1.appendChild(weatherEl);
+                tempEl = document.createElement("p");
+                tempEl.textContent = "Temp: " + data.daily[i+1].temp.max + " F";
+                day1.appendChild(tempEl);
+                windEl = document.createElement("p");
+                windEl.textContent = "Wind: " + data.daily[i+1].wind_speed + " MPH";
+                day1.appendChild(windEl);
+                humidityEl = document.createElement("p");
+                humidityEl.textContent = "Humidity: " + data.daily[i+1].humidity + " %";
+                day1.appendChild(humidityEl);
+            }
+
+        })
 }
 var searchCity = document.querySelector("#searchBtn");
 var loadCities = function () {
@@ -86,6 +113,7 @@ var loadHistory = function () {
     for (var i = 0; i < storageCities.length; i++) {
 
         var cityBtn = document.createElement("button")
+        $(cityBtn).addClass("historyBtn");
         cityBtn.textContent = storageCities[i].name;
         cityBtn.city = storageCities[i];
         historyParent.appendChild(cityBtn)
