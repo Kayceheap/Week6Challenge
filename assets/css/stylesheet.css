@@ -1,0 +1,9 @@
+#search {
+    height: 200px;
+    background-color: blue;
+}
+
+#current-city {
+    height: 200px;
+    background-color: red;
+}
