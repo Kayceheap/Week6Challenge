@@ -1,3 +1,35 @@
+// this is my api key 563792f09223bd0da18c8df2a8d545fc
+// this is my fech url https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={part}&appid={API key}
+var showCityDetails = function (city) {
+    var cityDetailsParent = document.querySelector("#city-details")
+    while (cityDetailsParent.hasChildNodes()) {
+        cityDetailsParent.removeChild(cityDetailsParent.firstChild)
+    }
+    var cityNameEl = document.createElement("h2")
+    cityNameEl.textContent = city.name
+    cityDetailsParent.appendChild(cityNameEl)
+    var fetchurl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + city.lat +"&lon=" + city.long +"&units=imperial&appid=563792f09223bd0da18c8df2a8d545fc";
+    fetch(fetchurl)
+    .then (function(response) {
+        return response.json();
+    })
+    .then(function (data) {
+        console.log(data);
+        var tempEl = document.createElement ("p");
+        tempEl.textContent = "Temp: " + data.current.temp + "F";
+        cityDetailsParent.appendChild(tempEl);
+        var windEl = document.createElement ("p");
+        windEl.textContent = "Wind: " + data.current.wind_speed + "mph";
+        cityDetailsParent.appendChild(windEl);
+        var humidityEl = document.createElement ("p");
+        humidityEl.textContent = "Humidity: " + data.current.humidity + "%";
+        cityDetailsParent.appendChild(humidityEl);
+        var uvindexEl = document.createElement ("p");
+        uvindexEl.textContent = "UV Index: " + data.current.uvi;
+        cityDetailsParent.appendChild (uvindexEl);
+        // now add the 5-day forecast
+    })
+}
 var searchCity = document.querySelector("#searchBtn");
 var loadCities = function () {
     var cities = localStorage.getItem("cityHistory")
@@ -37,9 +69,10 @@ searchCity.addEventListener("click", function (event) {
                 "long": data.resourceSets[0].resources[0].geocodePoints[0].coordinates[1]
             };
             saveCity(city);
+            showCityDetails(city)
             loadHistory();
         })
-    
+
 })
 
 var loadHistory = function () {
@@ -51,9 +84,15 @@ var loadHistory = function () {
     }
     var storageCities = loadCities()
     for (var i = 0; i < storageCities.length; i++) {
+
         var cityBtn = document.createElement("button")
         cityBtn.textContent = storageCities[i].name;
+        cityBtn.city = storageCities[i];
         historyParent.appendChild(cityBtn)
+        cityBtn.addEventListener("click", function (event) {
+            showCityDetails(event.target.city)
+        })
+
     }
 }
 loadHistory();

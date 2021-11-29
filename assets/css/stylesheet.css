@@ -1,7 +1,8 @@
 .header {
 height: 50px;
 font-size: x-large;   
-font-weight: bold;
+font-weight: bolder;
+text-align: center;
 background-image: linear-gradient(to right, rgb(184, 184, 241),  rgba(60, 60, 214), rgba(0, 2, 68, 1));
 
 color: white;
@@ -12,12 +13,17 @@ color: white;
    
 }
 
-#current-city {
-    height: 200px;
-    background-color: red;
+#city-details {
+  height: 300px;
+  border: gray solid 1px;
 }
 
 #search-history {
+    
     border-top: gray 2px solid;
     
+}
+
+#forecast {
+    margin-top: 50px;
 }
