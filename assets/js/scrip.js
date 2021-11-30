@@ -6,14 +6,30 @@ var showCityDetails = function (city) {
         cityDetailsParent.removeChild(cityDetailsParent.firstChild)
     }
     var cityNameEl = document.createElement("h2")
-    cityNameEl.textContent = city.name
+    cityNameEl.textContent = city.name +  "  (" + moment().format ("MM/DD/YYYY") + ")";
     cityDetailsParent.appendChild(cityNameEl)
+   
     var fetchurl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + city.lat + "&lon=" + city.long + "&units=imperial&appid=563792f09223bd0da18c8df2a8d545fc";
     fetch(fetchurl)
         .then(function (response) {
             return response.json();
         })
         .then(function (data) {
+            if (data.current.clouds <25) {
+                var sun = document.createElement ("i")
+                $(sun).addClass ("fas fa-sun");
+                cityNameEl.appendChild (sun);
+            }
+            else if (data.current.clouds <75) {
+                var cloudSun = document.createElement ("i")
+                $(cloudSun).addClass ("fas fa-cloud-sun");
+                cityNameEl.appendChild (cloudSun);
+            }
+            else {
+                var cloud = document.createElement ("i")
+                $(cloud).addClass ("fas fa-cloud");
+                cityNameEl.appendChild (cloud);
+            }
             console.log(data);
             var tempEl = document.createElement("p");
             tempEl.textContent = "Temp: " + data.current.temp + "F";
@@ -25,7 +41,22 @@ var showCityDetails = function (city) {
             humidityEl.textContent = "Humidity: " + data.current.humidity + "%";
             cityDetailsParent.appendChild(humidityEl);
             var uvindexEl = document.createElement("p");
-            uvindexEl.textContent = "UV Index: " + data.current.uvi;
+            uvindexEl.textContent = "UV Index: ";
+            var uvspan = document.createElement ("span");
+            uvspan.textContent = data.current.uvi;
+            uvindexEl.appendChild (uvspan);
+            if (data.current.uvi <3) {
+                $(uvspan).addClass ("uv-low");
+            }
+            else if (data.current.uvi <6) {
+                $(uvspan).addClass ("uv-med");
+            }
+            else if (data.current.uvi <8) {
+                $(uvspan).addClass ("uv-high");
+            }
+            else {
+                $(uvspan).addClass ("uv-very-high")
+            }
             cityDetailsParent.appendChild(uvindexEl);
             // now add the 5-day forecast
             var forecastParent = document.querySelector("#forecastParent");
@@ -36,13 +67,25 @@ var showCityDetails = function (city) {
 
 
                 var day1 = document.createElement("div");
+                $(day1).addClass ("forecastBox")
                 var day1Date = moment.unix(data.daily[i+1].dt).format("MM/DD/YYYY")
                 forecastParent.appendChild(day1);
                 var day1DateEl = document.createElement("p");
                 day1DateEl.textContent = day1Date;
                 day1.appendChild(day1DateEl);
-                var weatherEl = document.createElement('p');
-                weatherEl.textContent = data.daily[i+1].clouds;
+                var weatherEl = document.createElement('i');
+                if (data.daily[i+1].clouds <25) {
+                    $(weatherEl).addClass ("fas fa-sun");
+                    day1.appendChild(weatherEl);
+                }
+                else if (data.daily[i+1].clouds <75) {
+                    $(weatherEl).addClass ("fas fa-cloud-sun");
+                    day1.appendChild(weatherEl);
+                }
+                else  {
+                    $(weatherEl).addClass ("fas fa-cloud");
+                    day1.appendChild(weatherEl);
+                }
                 day1.appendChild(weatherEl);
                 tempEl = document.createElement("p");
                 tempEl.textContent = "Temp: " + data.daily[i+1].temp.max + " F";
@@ -81,6 +124,10 @@ var saveCity = function (city) {
 searchCity.addEventListener("click", function (event) {
     event.preventDefault();
     var inputCity = document.querySelector("#city-input").value;
+    if (inputCity === null || inputCity === "") {
+        return;
+    }
+    $("#city-input").val("");
 
     var fetchString = "https://dev.virtualearth.net/REST/v1/Locations/US/" + inputCity + "/?key=AovCYtswu4CycKE80Kb5y7hirY12vuOXsl8AJu3sC9jUZtLOuoZQtIoWh7q2ujoi"
     fetch(fetchString)
@@ -124,3 +171,7 @@ var loadHistory = function () {
     }
 }
 loadHistory();
+var savedCities = loadCities();
+if (savedCities.length >0) {
+    showCityDetails(savedCities[0])
+};

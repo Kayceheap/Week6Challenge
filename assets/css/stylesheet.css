@@ -12,10 +12,15 @@ color: white;
     height: 200px;
    
 }
+#city-details p, h2 {
+    margin-left: 20px;
+}
 
 #city-details {
-  height: 300px;
-  border: gray solid 1px;
+  margin-top: 10px;
+  padding-top: 10px 0 0 20px;
+  height: 250px;
+  border: gray solid 2px;
 }
 
 #search-history {
@@ -35,10 +40,48 @@ color: white;
 }
 
 .historyBtn {
+    font-weight: bold;
+    font-size: x-large;
     padding: 10px;
    display: block;
    width: 100%;
    border-radius: 5px;
-   margin: 10px;
+   margin: 10px 0 0 0;
    background-color: lightgray;
+}
+
+.uv-low {
+    background-color: green;
+    color:white;
+    padding: 2px 5px 3px 5px;
+    border-radius: 2px;
+}
+
+.uv-med {
+    background-color: yellow;
+    color:black;
+    padding: 2px 5px 3px 5px;
+    border-radius: 2px;
+}
+
+.uv-high {
+    background-color: orange;
+    color:white;
+    padding: 2px 5px 3px 5px;
+    border-radius: 2px;
+}
+
+.uv-very-high {
+    background-color: red;
+    color:white;
+    padding: 2px 5px 3px 5px;
+    border-radius: 2px;
+}
+
+.forecastBox {
+    font-weight: bolder;
+    background-color: rgba(23, 23, 105, 0.61) ;
+    color: white;
+    padding: 20px;
+    margin: 10px;
 }
